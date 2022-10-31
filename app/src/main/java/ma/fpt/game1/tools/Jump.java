@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory;
 import ma.fpt.game1.R;
 
 public class Jump {
-    public boolean isGoinUp = false;
+    public boolean isGoingUp = false;
     int x,y, width, height, wingCounter = 0;
     Bitmap j1, j2;
 
