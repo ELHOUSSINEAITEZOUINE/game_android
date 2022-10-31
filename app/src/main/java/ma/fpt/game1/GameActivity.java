@@ -5,10 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import ma.fpt.game1.tools.GameView;
-import ma.fpt.game1.tools.Jump;
 
 public class GameActivity extends AppCompatActivity {
     private GameView gameView;

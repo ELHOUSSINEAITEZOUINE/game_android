@@ -6,12 +6,12 @@ import android.graphics.BitmapFactory;
 
 import ma.fpt.game1.R;
 
-class Jump {
-    public boolean isGoingUp=false;
-
+public class JumpOld {
+    public boolean isGoingUp = false;
     int x,y, width, height, wingCounter = 0;
     Bitmap j1, j2;
-    Jump(int screenY, Resources res){
+
+    JumpOld(int screenY, Resources res) {
         j1 = BitmapFactory.decodeResource(res, R.drawable.jump1);
         j2 = BitmapFactory.decodeResource(res, R.drawable.jump2);
 
@@ -29,7 +29,7 @@ class Jump {
         if(wingCounter == 0){
             wingCounter++;
             return j1;
-        }else{
+        }else {
             wingCounter--;
             return j2;
         }

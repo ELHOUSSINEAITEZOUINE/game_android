@@ -4,9 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+
+import ma.fpt.game1.R;
 
 public class GameView extends SurfaceView implements Runnable {
 
@@ -16,6 +17,8 @@ public class GameView extends SurfaceView implements Runnable {
     private Background background1, background2;
     Paint paint;
     Jump jump;
+    Obstacle obs1;
+    Obstacle obs2;
     int cnt;
 
     public GameView(Context context, int screenX, int screenY) {
@@ -27,6 +30,12 @@ public class GameView extends SurfaceView implements Runnable {
         background2 = new Background(screenX, screenY, getResources());
 
         jump = new Jump(screenY, getResources());
+
+        obs1 = new Obstacle(screenX/2, screenY, getResources(), R.drawable.obstacle1);
+        obs2 = new Obstacle(screenX/2+380, screenY, getResources(), R.drawable.obstacle2);
+
+        obs1.y -= obs1.height;
+        obs2.y -= obs2.height;
 
         background2.x = screenX;
         paint = new Paint();
@@ -43,13 +52,24 @@ public class GameView extends SurfaceView implements Runnable {
     public void update(){
         background1.x -= 20;
         background2.x -= 20;
+
+        obs1.x -= 20;
+        obs2.x -= 20;
+
+
         if(background1.x + background1.background.getWidth() <= 0){
             background1.x = screenX;
+            obs1.x = screenX-100;
+            obs2.x = screenX-540;
         }
 
         if(background2.x + background2.background.getWidth() <= 0){
             background2.x = screenX;
+            obs1.x = screenX-100;
+            obs2.x = screenX-540;
         }
+
+
 
         if(jump.isGoingUp){
             if(jump.y>=(screenY)/2-50){
@@ -77,10 +97,11 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
             canvas.drawBitmap(jump.getJump() , jump.x, jump.y, paint);
-            float x1 = 220*1280/600, x2=280*1280/600;
-            float y1 = 215*720/303, y2=303*720/303;
-            Rect rect11=new Rect(background2.x+(int)x1,background1.y+(int)y1,
-                    background2.x+(int)x2,background2.y+(int)y2);
+
+            canvas.drawBitmap(obs1.obstacle , obs1.x, obs1.y, paint);
+
+            canvas.drawBitmap(obs2.obstacle , obs2.x, obs2.y, paint);
+
 
             getHolder().unlockCanvasAndPost(canvas);
         }
