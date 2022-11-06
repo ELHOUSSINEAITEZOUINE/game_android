@@ -39,6 +39,7 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
+
     public void gameOver() {
         Log.e("CALLBACK", "IN GAME Activity");
         getWindow().setContentView(R.layout.activity_game);
@@ -52,7 +53,6 @@ public class GameActivity extends AppCompatActivity {
         findViewById(R.id.mainmenu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), GameActivity.class));
                 finish();
             }
         });

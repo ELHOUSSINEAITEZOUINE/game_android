@@ -1,5 +1,6 @@
 package ma.fpt.game1.tools;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import ma.fpt.game1.R;
 public class GameView extends SurfaceView implements Runnable {
 
     Context context;
+    Canvas canvas;
     private Thread thread;
     private Boolean isPlaying;
     private int screenX, screenY;
@@ -34,9 +36,11 @@ public class GameView extends SurfaceView implements Runnable {
 
     int speed = 30;
 
-    public GameView(Context context, int screenX, int screenY) {
-        super(context);
-        context = context;
+    boolean gameOver = false;
+
+    public GameView(Context ctx, int screenX, int screenY) {
+        super(ctx);
+        context = ctx;
         this.screenX = screenX;
         this.screenY = screenY;
 
@@ -125,21 +129,13 @@ public class GameView extends SurfaceView implements Runnable {
         if(jump.y>=screenY - jump.height)
             jump.y=screenY - jump.height;
 
-        if(rectPlayer.intersect(rectObs1) || rectPlayer.intersect(rectObs2)){
-            if(rectPlayer.intersect(rectObs1)){
-                Log.e("COLLISION", "player touch obs 1");
-            }
-            if(rectPlayer.intersect(rectObs2)){
-                Log.e("COLLISION", "player touch obs 2");
-            }
 
-            gameOver();
-        }
     }
 
     public void draw(){
+
         if(getHolder().getSurface().isValid()){
-            Canvas canvas = getHolder().lockCanvas();
+            canvas = getHolder().lockCanvas();
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
             canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
@@ -180,6 +176,24 @@ public class GameView extends SurfaceView implements Runnable {
             //paint.setColor(Color.BLUE);
             //canvas.drawRect(rectPlayer, paint);
 
+            if(rectPlayer.intersect(rectObs1) || rectPlayer.intersect(rectObs2)){
+                gameOver = true;
+                if(rectPlayer.intersect(rectObs1)){
+                    Log.e("COLLISION", "player touch obs 1");
+                }
+                if(rectPlayer.intersect(rectObs2)){
+                    Log.e("COLLISION", "player touch obs 2");
+                }
+
+                paint.setStyle(Paint.Style.FILL);
+                paint.setTextSize(150);
+                paint.setColor(Color.BLACK);
+                paint.setStrokeWidth(10);
+                canvas.drawText("Collision", screenX / 2 - 150, 200, paint);
+            }
+
+
+
             getHolder().unlockCanvasAndPost(canvas);
         }
     }
@@ -208,14 +222,21 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void gameOver() {
-        isPlaying = false;
-        try {
+        isPlaying = true;
+
+        /*try {
+            paint.setStyle(Paint.Style.FILL);
+            paint.setTextSize(150);
+            paint.setColor(Color.BLACK);
+            paint.setStrokeWidth(10);
+            canvas.drawText("Collision", screenX / 2 - 150, 200, paint);
+            //GameActivity gameActivity = (GameActivity)((Activity)  context);
             Looper.prepare();
-            GameActivity gameActivity = (GameActivity) context;
+            GameActivity gameActivity = new GameActivity();
             gameActivity.gameOver();
         }catch (Exception e){
             Log.e("ERROR", e.getMessage());
-        }
+        }*/
 
 
     }
