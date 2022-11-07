@@ -38,8 +38,11 @@ public class GameView extends SurfaceView implements Runnable {
 
     boolean gameOver = false;
 
+    int score = 0;
+
     public GameView(Context ctx, int screenX, int screenY) {
         super(ctx);
+        gameOver = false;
         context = ctx;
         this.screenX = screenX;
         this.screenY = screenY;
@@ -112,7 +115,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         if(jump.isGoingUp){
-            if(jump.y>=(screenY)/2-80){
+            if(jump.y>=(screenY)/2-100){
                 jump.y -=60;
             }
             cnt++;
@@ -128,6 +131,10 @@ public class GameView extends SurfaceView implements Runnable {
 
         if(jump.y>=screenY - jump.height)
             jump.y=screenY - jump.height;
+
+
+
+        score++;
 
 
     }
@@ -176,8 +183,22 @@ public class GameView extends SurfaceView implements Runnable {
             //paint.setColor(Color.BLUE);
             //canvas.drawRect(rectPlayer, paint);
 
+
+
+
+
+            paint.setStyle(Paint.Style.FILL);
+            paint.setTextSize(80);
+            paint.setColor(Color.WHITE);
+            paint.setStrokeWidth(10);
+            canvas.drawText(score+"", screenX -250, 130, paint);
+
+            if(gameOver){
+
+            }
+
             if(rectPlayer.intersect(rectObs1) || rectPlayer.intersect(rectObs2)){
-                gameOver = true;
+
                 if(rectPlayer.intersect(rectObs1)){
                     Log.e("COLLISION", "player touch obs 1");
                 }
@@ -185,16 +206,28 @@ public class GameView extends SurfaceView implements Runnable {
                     Log.e("COLLISION", "player touch obs 2");
                 }
 
+                gameOver = true;
+
                 paint.setStyle(Paint.Style.FILL);
-                paint.setTextSize(150);
-                paint.setColor(Color.BLACK);
+                paint.setTextSize(100);
+                paint.setColor(Color.WHITE);
                 paint.setStrokeWidth(10);
-                canvas.drawText("Collision", screenX / 2 - 150, 200, paint);
+                canvas.drawText("Game Over with score "+score, screenX/2-500, screenY/2-100, paint);
+
+                paint.setStyle(Paint.Style.FILL);
+                paint.setTextSize(80);
+                paint.setColor(Color.WHITE);
+                paint.setStrokeWidth(10);
+                canvas.drawText("Tape to replay", screenX/2-250, screenY/2+90, paint);
+
+
             }
 
-
-
             getHolder().unlockCanvasAndPost(canvas);
+
+            if(gameOver){
+                pause();
+            }
         }
     }
 
@@ -222,33 +255,73 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void gameOver() {
-        isPlaying = true;
+        //isPlaying = false;
 
-        /*try {
-            paint.setStyle(Paint.Style.FILL);
-            paint.setTextSize(150);
-            paint.setColor(Color.BLACK);
-            paint.setStrokeWidth(10);
-            canvas.drawText("Collision", screenX / 2 - 150, 200, paint);
-            //GameActivity gameActivity = (GameActivity)((Activity)  context);
-            Looper.prepare();
-            GameActivity gameActivity = new GameActivity();
-            gameActivity.gameOver();
-        }catch (Exception e){
-            Log.e("ERROR", e.getMessage());
-        }*/
 
+
+        gameOver = true;
 
     }
+
+    private void init() {
+        gameOver = false;
+        score = 0;
+        background1 = new Background(screenX, screenY, getResources());
+        background2 = new Background(screenX, screenY, getResources());
+
+        jump = new Jump(screenY, getResources());
+
+        obs1 = new Obstacle(screenX/2, screenY, getResources(), R.drawable.obs1);
+        obs2 = new Obstacle(screenX/2+780, screenY, getResources(), R.drawable.obs2);
+
+        obs1.y -= obs1.height;
+        obs2.y -= obs2.height;
+
+        background2.x = screenX;
+
+        rectObs1 = new Rect(
+                obs1.x,
+                obs1.y,
+                obs1.x + obs1.width,
+                obs1.y + obs1.height
+        );
+
+        rectObs2 = new Rect(
+                obs2.x,
+                obs2.y,
+                obs2.x + obs2.width,
+                obs2.y + obs2.height
+        );
+
+        rectPlayer = new Rect(
+                jump.x,
+                jump.y,
+                jump.x+jump.width,
+                jump.y+jump.height
+        );
+
+        paint = new Paint();
+        resume();
+    }
+
     public boolean onTouchEvent(MotionEvent event){
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                if( jump.y== screenY - jump.height ){
-                    jump.isGoingUp = true;
+                if(gameOver){
+                    init();
+                }else{
+                    if( jump.y== screenY - jump.height ){
+                        jump.isGoingUp = true;
+                    }
                 }
+
                 break;
             case MotionEvent.ACTION_UP:
-                jump.isGoingUp = false;
+                if(gameOver){
+                    init();
+                }else {
+                    jump.isGoingUp = false;
+                }
                 break;
         }
         return true;
