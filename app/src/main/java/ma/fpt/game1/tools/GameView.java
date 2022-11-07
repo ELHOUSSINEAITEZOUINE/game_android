@@ -136,6 +136,15 @@ public class GameView extends SurfaceView implements Runnable {
 
         score++;
 
+        if(score > 230 && score < 401){
+            speed = 35;
+        }
+
+        if (score > 400){
+            speed = 40;
+        }
+
+
 
     }
 
@@ -265,6 +274,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void init() {
         gameOver = false;
+        speed = 30;
         score = 0;
         background1 = new Background(screenX, screenY, getResources());
         background2 = new Background(screenX, screenY, getResources());
